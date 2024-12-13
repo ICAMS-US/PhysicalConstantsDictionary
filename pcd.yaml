@@ -1,10 +1,10 @@
 physical_constants_dictionary:
-  version_number: 0.0.0
-  institution: National ESPC/NUOPC
+  version_number: 0.0.1
+  institution: E3SM Project
   description: Community-based dictionary for consistent physical constant sets
-  contact: National ESPC
+  contact: E3SM Project
   set:
-    - ASHandbook1964:
+    - mathematical:
         description: "
           Common mathematical constants.
         "
@@ -77,7 +77,7 @@ physical_constants_dictionary:
             description: "
               Square root of 3.
             "
-    - CODATA2014:
+    - universal_physical
         description: "
           CODATA Recommended Values of the Fundamental Physical Constants: 2014
         "
@@ -176,7 +176,7 @@ physical_constants_dictionary:
               Ideal gas molar volume as computed by the ideal gas law (RT/p)
               at Standard Temperature and Pressure (STP: 273.15K, 100 kPa).
             "
-    - GRS80:
+    - earth_physical:
         description: "
           Geodetic Reference System 1980.
         "
@@ -279,7 +279,7 @@ physical_constants_dictionary:
               Radius of Earth's reference sphere with same volume as ellipsoid's.
               Derived constant.
             "
-    - SORCETIM2008:
+    - solar:
         description: "
           NASA Solar Radiation and Climate Experiment (SORCE), Total Irradiance
           Monitor (TIM)
@@ -299,7 +299,7 @@ physical_constants_dictionary:
               Most probable value of total solar irradiance representative of
               solar minimum (aka solar constant).
             "
-    - IAPWS1995:
+    - water:
         description: "
           International Association for the Properties of Water and Steam (IAPWS).
           Thermodynamic Property Formulations 1995 (http://www.iapws.org)
