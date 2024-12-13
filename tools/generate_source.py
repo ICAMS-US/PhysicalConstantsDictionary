@@ -54,11 +54,11 @@ def write_header(ofile,lang):
     Write file header
     """
     if lang=='cxx':
-        ofile.write('#ifndef E3SM_CONSTANTS_HPP\n')
-        ofile.write('#define E3SM_CONSTANTS_HPP\n\n')
-        ofile.write('namespace e3sm {\n')
+        ofile.write('#ifndef PHYSICAL_CONSTANTS_DICTIONARY_HPP\n')
+        ofile.write('#define PHYSICAL_CONSTANTS_DICTIONARY_HPP\n\n')
+        ofile.write('namespace pcd {\n')
     elif lang=='f90':
-        ofile.write('module e3sm_constants\n')
+        ofile.write('module pcd\n')
         ofile.write('    implicit none\n\n')
         ofile.write('    !define double precision kind\n')
         ofile.write('    integer, parameter :: dp = selected_real_kind(12)\n')
@@ -72,10 +72,10 @@ def write_footer(ofile,lang):
     Write file footer
     """
     if lang=='cxx':
-        ofile.write('\n} // namespace e3sm \n')
-        ofile.write('#endif // E3SM_CONSTANTS_HPP')
+        ofile.write('\n} // namespace pcd \n')
+        ofile.write('#endif // PHYSICAL_CONSTANTS_DICTIONARY')
     elif lang=='f90':
-        ofile.write('\nend module e3sm_constants')
+        ofile.write('\nend module pcd')
     else:
         raise RuntimeError(f'Missing implementation for language {lang}')
 
