@@ -103,7 +103,7 @@ def write_group(ofile,lang,gname,group):
             raise RuntimeError(f'Missing implementation for language {lang}')
 
 ###############################################################################
-def generate_file(lang,groups,filename):
+def generate_file(lang, groups, filename):
 ###############################################################################
     """
     Parse the pcd.yaml file, and dump to file the content of the requested groups
@@ -114,17 +114,17 @@ def generate_file(lang,groups,filename):
 
     groups_in_file = {}
     for g in constants_dict['set']:
-        if len(g.keys())>1:
+        if len(g.keys()) > 1:
             raise ValueError('Invalid formatting of pcd database.\n'
                              'Each entry of the "set" sequence should contain ONE dictionary')
-        for k,v in g.items():
+        for k, v in g.items():
             groups_in_file[k] = v
     valid_groups = list(groups_in_file.keys())
     if groups is not None and any(item not in valid_groups for item in groups):
         raise ValueError(f"Invalid value for groups: {','.join(groups)}.\n"
                          f"Valid choices are {','.join(valid_groups)}")
 
-    with open(filename,'w', encoding="utf-8") as ofile:
+    with open(filename, 'w', encoding="utf-8") as ofile:
         # Header
         write_header(ofile,lang)
 
