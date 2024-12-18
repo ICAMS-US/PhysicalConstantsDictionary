@@ -77,7 +77,7 @@ physical_constants_dictionary:
             description: "
               Square root of 3.
             "
-    - universal_physical
+    - universal_physical:
         description: "
           CODATA Recommended Values of the Fundamental Physical Constants: 2014
         "
