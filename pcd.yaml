@@ -32,7 +32,7 @@ physical_constants_dictionary:
             description: "
               Base of natural logarithms.
             "
-          - name: gamma
+          - name: em_gamma
             value: 0.577215664901532860606512
             units: none
             prec: double
@@ -77,7 +77,7 @@ physical_constants_dictionary:
             description: "
               Square root of 3.
             "
-    - universal_physical
+    - universal_physical:
         description: "
           CODATA Recommended Values of the Fundamental Physical Constants: 2014
         "
