@@ -2,76 +2,52 @@ name: Build and Deploy Documentation
 
 on:
   push:
-    branches:
-      - main
-      - master
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - '.github/workflows/docs.yml'
+    branches: [main]
   pull_request:
-    branches:
-      - main
-      - master
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - '.github/workflows/docs.yml'
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
+    branches: [main]
 jobs:
-  # Build job
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.x'
+          node-version: '18'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build docs
+        run: npm run build:docs
+
+      - name: Deploy to main docs (push to main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/dist
+          destination_dir: .
 
-      - name: Install MkDocs and dependencies
-        run: |
-          pip install mkdocs-material mkdocs-minify-plugin
-
-      - name: Build MkDocs site
-        run: mkdocs build --strict
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Deploy to preview (pull request)
+        if: github.event_name == 'pull_request'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: docs
-          path: site
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/dist
+          destination_dir: preview/pr-${{ github.event.number }}
 
-  # Deployment job
-  deploy:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+      - name: Comment PR with preview link
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '📖 Documentation preview available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/preview/pr-${{ github.event.number }}/'
+            })
+
