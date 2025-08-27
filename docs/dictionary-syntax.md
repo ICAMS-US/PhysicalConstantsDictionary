@@ -18,18 +18,23 @@ physical_constants_dictionary:
 The value associated to the `physical_constants_dictionary` key consists of the following YAML mapping nodes:
 
 ### version_number (optional)
+
 The dictionary version, as in the standard GNU scheme: major.minor.revision
 
 ### institution (optional)
+
 The name of the institution responsible for the dictionary
 
 ### description (optional)
+
 A short description of the dictionary file
 
 ### contact (optional)
+
 The email address of the designed POC for this file
 
 ### set (mandatory)
+
 Internally consistent physical constants sets are included as YAML [block sequences](http://yaml.org/spec/1.2/spec.html) of mappings. A physical constant set is codified as a YAML mapping node, with the set name as the main key. Each set must begin with a hyphen (-), separated by space from the set name (key).
 
 ## Physical Constants Sets
@@ -37,12 +42,15 @@ Internally consistent physical constants sets are included as YAML [block sequen
 The value associated to a set key includes the following mapping nodes:
 
 ### description (mandatory)
+
 A brief description of the constants set
 
 ### citation (mandatory)
+
 Literature references associated with the set
 
 ### entries
+
 This node includes the actual dictionary entries for each physical constant included in the set. Entries are also organized as block sequences of mapping nodes, and must begin with a hyphen (-).
 
 ## Physical Constant Entry Format
@@ -66,22 +74,33 @@ A physical constant entry can be defined as shown in the example below:
 The name of each key and its associated value are listed below:
 
 ### name
+
 Physical constant's standard name
 
 ### value
+
 Physical constant's numerical value
 
 ### units
+
 Physical constant's units
 
 ### prec
+
 `single` (4 bytes) or `double` (8 bytes) indicate the parameter's kind in Fortran
 
+### type
+
+`strict` for intrinsic constants or `parametric` if derivable from other constants (not implemented)
+
 ### uncertainty (optional)
+
 The constant's absolute uncertainty (a number, or `exact`)
 
 ### relative_uncertainty (optional)
+
 The constant's relative uncertainty (a number, or `exact`)
 
 ### description
+
 A detailed description of the physical constant, with additional references if necessary.
