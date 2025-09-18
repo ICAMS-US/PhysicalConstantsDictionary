@@ -50,6 +50,16 @@ namespace CPCD {
     // -- public class method
     try {
       this->doc = YAMLLoadFile(filename);
+      
+      // Extract version and institution information
+      if (this->doc["physical_constants_dictionary"]) {
+        if (this->doc["physical_constants_dictionary"]["version_number"]) {
+          this->version = this->doc["physical_constants_dictionary"]["version_number"].as<std::string>();
+        }
+        if (this->doc["physical_constants_dictionary"]["institution"]) {
+          this->institution = this->doc["physical_constants_dictionary"]["institution"].as<std::string>();
+        }
+      }
     } catch (const Exception& e) {
       return SetError(e.what());
     }
@@ -370,6 +380,25 @@ namespace CPCD {
          << " = kind(1.d0)"
          << std::endl
          << std::endl;
+      
+      // Add version and institution as Fortran parameter variables
+      if (!this->version.empty()) {
+        os << _CPCD_FORTRAN_INDENT
+           << "character(len=*), parameter :: cpcd_version = '"
+           << this->version
+           << "'"
+           << std::endl;
+      }
+      if (!this->institution.empty()) {
+        os << _CPCD_FORTRAN_INDENT
+           << "character(len=*), parameter :: cpcd_institution = '"
+           << this->institution
+           << "'"
+           << std::endl;
+      }
+      if (!this->version.empty() || !this->institution.empty()) {
+        os << std::endl;
+      }
       for (Iterator is=map.begin(); is!=map.end(); is++) {
         os << "! - from set " << is->first << std::endl;
         for (int i=0; i<is->second.size(); i++) {

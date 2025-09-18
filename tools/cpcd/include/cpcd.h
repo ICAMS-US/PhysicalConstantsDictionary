@@ -115,6 +115,8 @@ namespace CPCD {
       Node sel;    // stores physical constant list parsed from input user request
       Node syntax; // stores syntax reference for physical constant dictionary for validation purposes
       Node map;    // work map
+      std::string version; // stores dictionary version
+      std::string institution; // stores dictionary institution
 
   }; // class CPCD
 
