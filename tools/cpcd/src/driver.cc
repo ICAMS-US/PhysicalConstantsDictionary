@@ -40,7 +40,7 @@ print_usage (int status)
   std::cerr << " " << CPCD_SUCCESS << "if successful, " << CPCD_FAILURE << " if an error occurs." << std::endl;
   std::cerr << std::endl;
   std::cerr << "For bugs reporting, please visit:" << std::endl;
-  std::cerr << "<https://github.com/ESCOMP/PhysicalConstantsDictionary>" << std::endl;
+  std::cerr << "<https://github.com/ICAMS-US/PhysicalConstantsDictionary>" << std::endl;
   std::exit (status);
 }
 
