@@ -17,11 +17,11 @@ physical_constants_dictionary:
 
 The value associated to the `physical_constants_dictionary` key consists of the following YAML mapping nodes:
 
-### version_number (optional)
+### version_number (mandatory)
 
 The dictionary version, as in the standard GNU scheme: major.minor.revision
 
-### institution (optional)
+### institution (mandatory)
 
 The name of the institution responsible for the dictionary
 
@@ -33,9 +33,15 @@ A short description of the dictionary file
 
 The email address of the designed POC for this file
 
+### references (mandatory)
+
+References that were used to obtain each value listed in the dictionary.  Each reference
+name starts with a key which is used later in each physical constant to indicate where
+the value came from.
+
 ### set (mandatory)
 
-Internally consistent physical constants sets are included as YAML [block sequences](http://yaml.org/spec/1.2/spec.html) of mappings. A physical constant set is codified as a YAML mapping node, with the set name as the main key. Each set must begin with a hyphen (-), separated by space from the set name (key).
+Physical constants sets are included as YAML [block sequences](http://yaml.org/spec/1.2/spec.html) of mappings. A physical constant set is codified as a YAML mapping node, with the set name as the main key. Each set must begin with a hyphen (-), separated by space from the set name (key).
 
 ## Physical Constants Sets
 
@@ -44,10 +50,6 @@ The value associated to a set key includes the following mapping nodes:
 ### description (mandatory)
 
 A brief description of the constants set
-
-### citation (mandatory)
-
-Literature references associated with the set
 
 ### entries
 
@@ -64,6 +66,7 @@ A physical constant entry can be defined as shown in the example below:
   prec: double
   type: strict
   uncertainty: exact
+  reference: key
   description: |
     Nominal acceleration of an object in a vacuum at sea level at a
     geodetic latitude of 45 degrees.
@@ -103,4 +106,4 @@ The constant's relative uncertainty (a number, or `exact`)
 
 ### description
 
-A detailed description of the physical constant, with additional references if necessary.
+A detailed description of the physical constant.
