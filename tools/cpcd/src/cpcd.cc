@@ -150,6 +150,50 @@ namespace CPCD {
   }
 
   int
+  CPCD::loadall ()
+  {
+    // generate request for all constants in the dictionary
+    // by iterating through all sets and their entries
+    // -- public class method
+    try {
+      this->req = Node(NodeType::Null);  // reset request to empty
+
+      if (!this->doc["physical_constants_dictionary"] || !this->doc["physical_constants_dictionary"]["set"]) {
+        return SetError("invalid dictionary structure - missing sets");
+      }
+
+      const Node& sets = this->doc["physical_constants_dictionary"]["set"];
+
+      // Iterate through all sets
+      for (int i = 0; i < sets.size(); i++) {
+        for (Iterator it = sets[i].begin(); it != sets[i].end(); it++) {
+          std::string set_name = it->first.as<std::string>();
+
+          if (set_name != "description" && set_name != "citation" && it->second["entries"]) {
+            const Node& entries = it->second["entries"];
+
+            // Collect all constant names from this set
+            for (int j = 0; j < entries.size(); j++) {
+              if (entries[j]["name"]) {
+                std::string const_name = entries[j]["name"].as<std::string>();
+                this->req[set_name].push_back(const_name);
+              }
+            }
+          }
+        }
+      }
+
+      std::cout << this->req << std::endl;
+      if (this->ParseReq(this->req, this->sel))
+        return SetError("failure parsing generated all-constants request");
+
+    } catch (const Exception& e) {
+      return SetError(e.what());
+    }
+    return CPCD_SUCCESS;
+  }
+
+  int
   CPCD::showreq () const
   {
     // write YAML file containing user-requested

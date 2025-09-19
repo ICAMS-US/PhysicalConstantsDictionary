@@ -29,7 +29,8 @@ print_usage (int status)
   std::cerr << std::endl;
   std::cerr << "Mandatory arguments to long options are mandatory for short options too." << std::endl;
   std::cerr << "  -d, --dictionary YAML_FILE      Use YAML_FILE as dictionary" << std::endl;
-  std::cerr << "  -r, --request    YAML_FILE      Extract constants listed in YAML_FILE" << std::endl;
+  std::cerr << "  -r, --request    YAML_FILE      Extract constants listed in YAML_FILE (optional)" << std::endl;
+  std::cerr << "                                  If not specified, extracts all constants" << std::endl;
   std::cerr << "  -o, --output     FILE           Save Fortran output to FILE" << std::endl;
   std::cerr << "  -x, --validate                  Validate dictionary file before proceeding" << std::endl;
   std::cerr << "  -v, --verbose                   Use verbose output" << std::endl;
@@ -66,13 +67,14 @@ main (int argc, char** argv)
 
   // Defaults
   std::string pcd_file = "pcd.yaml";        // Physical constant dictionary YAML file
-  std::string req_file = "req.yaml";        // User-provided YAML file with requested constants
+  std::string req_file = "";                // User-provided YAML file with requested constants (optional)
   std::string out_file = "cpcd_mod.F90";    // Fortran module file
 
   // Control flags
   int validate = 0;
   int verbose  = 0;
   int print    = 0;
+  int use_all  = 0;                          // Flag to use all constants when no request file provided
 
   // Define command-line options
   static struct option options[] =
@@ -167,8 +169,15 @@ main (int argc, char** argv)
     return rc;
   }
 
-  // Read YAML file containing user-requested constants
-  rc = doc.readreq (req_file);
+  // Read YAML file containing user-requested constants or generate request for all constants
+  if (req_file.empty()) {
+    // Generate request for all constants
+    rc = doc.loadall();
+    use_all = 1;
+  } else {
+    // Read user-provided request file
+    rc = doc.readreq (req_file);
+  }
   if (rc != CPCD_SUCCESS) {
     return rc;
   }
@@ -176,14 +185,18 @@ main (int argc, char** argv)
   // Print original user request and corresponding dictionary query
   if (verbose) {
     std::cout << "================" << std::endl;
-    std::cout << "User request:" << std::endl;
-    std::cout << "================" << std::endl;
-    rc = doc.showreq ();
-    if (rc != CPCD_SUCCESS) {
-      return rc;
+    if (use_all) {
+      std::cout << "Extracting all constants from dictionary" << std::endl;
+    } else {
+      std::cout << "User request:" << std::endl;
+      std::cout << "================" << std::endl;
+      rc = doc.showreq ();
+      if (rc != CPCD_SUCCESS) {
+        return rc;
+      }
+      std::cout << "================" << std::endl;
+      std::cout << std::endl;
     }
-    std::cout << "================" << std::endl;
-    std::cout << std::endl;
     std::cout << "Actual query:" << std::endl;
     std::cout << "================" << std::endl;
     doc.showsreq ();

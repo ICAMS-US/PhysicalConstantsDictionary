@@ -73,6 +73,7 @@ namespace CPCD {
       // read and set user requests for physical constant subsets
       int readreq (const std::string& filename);
       int loadreq (const std::string& request);
+      int loadall ();  // generate request for all constants in the dictionary
       // write original request to standard output
       int showreq () const;
       // write stored request to standard output
