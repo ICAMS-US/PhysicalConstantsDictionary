@@ -1,0 +1,4 @@
+.deps
+cpcd
+cpcd-cpcd.o
+cpcd-driver.o
