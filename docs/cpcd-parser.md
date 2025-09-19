@@ -1,6 +1,7 @@
 # The CPCD Parser
 
-The Community Physical Constant Dictionary (CPCD) parser is a command-line tool that allow users to lookup physical constants in the YAML dictionary file and include them in their code by generating a suitable source file.
+The Community Physical Constant Dictionary (CPCD) parser is a command-line tool that allow users to generate a Fortran source file containing all or a selection of the contstants in the YAML
+Physical Constants Dictionary.
 
 ## Requirements
 
@@ -88,7 +89,8 @@ Main tool to validate, parse, and extract physical constant sets from the Commun
 
 Mandatory arguments to long options are mandatory for short options too.
   -d, --dictionary YAML_FILE    Use YAML_FILE as dictionary
-  -r, --request YAML_FILE       Extract constants listed in YAML_FILE
+  -r, --request YAML_FILE       Extract constants listed in YAML_FILE (optional)
+                                If not specified, extracts all constants
   -o, --output FILE             Save Fortran output to FILE
   -x, --validate                Validate dictionary file before proceeding
   -v, --verbose                 Use verbose output
@@ -96,36 +98,30 @@ Mandatory arguments to long options are mandatory for short options too.
   -h, --help                    Display available options
 
 Exit status: 0 if successful, 1 if an error occurs.
-For bugs reporting, please visit: <https://github.com/ESCOMP/PhysicalConstantsDictionary>
+For bugs reporting, please visit: <https://github.com/ICAMS-US/PhysicalConstantsDictionary>
 ```
 
 ### Request File Format
 
-A collection of physical constants to be extracted from the dictionary is provided to the CPCD parser also in a YAML file. A sample file (`req.yaml`) is distributed with this package in the `cpcd/test/` directory. Its content is included below:
+A collection of physical constants to be extracted from the dictionary can be provided to the CPCD parser also in a YAML file. A sample file (`req.yaml`) is distributed with this package in the `cpcd/test/` directory. Its content is included below:
 
 ```yaml
 # This is an example of a user-requested list of physical constants
 # to be looked up in the dictionary by the CPCD parser and included
 # in the generated source code.
 
-ASHandbook1964: [ pi, gamma ]
-
-CODATA2014:
-  - standard_acceleration_of_gravity
-  - speed_of_light_in_vacuum
-  - stefan_boltzmann_constant
-
-GRS80: mean_radius
-
-IAPWS1995: [ liquid_water_triple_point_density, vapor_water_triple_point_density ]
-
-ASHandbook1964: square_root_of_2
-ASHandbook1964: pi
+mathematical: [pi, em_gamma, square_root_of_2]
+universal_physical:
+    - standard_acceleration_of_gravity
+    - speed_of_light_in_vacuum
+    - stefan_boltzmann_constant
+earth_physical: mean_radius
+water: [ liquid_water_triple_point_density, vapor_water_triple_point_density ]
 ```
 
 ### Example Usage
 
-When the file above is provided to `cpcd` via option `-r`, the CPCD parser will output a source file that can be added to a model source code. Fortran is the only output language currently supported by the CPCD parser.
+The CPCD parser will output a source file that can be added to a model source code. Fortran is the only output language currently supported by the CPCD parser.
 
 The following command:
 
@@ -137,24 +133,25 @@ will generate the Fortran module file `cpcd_mod.F90` in the current directory. T
 
 ```fortran
 module cpcd
+
   integer, parameter :: cpcd_kind = kind(1.d0)
 
-  ! - from set ASHandbook1964
-  real(cpcd_kind), parameter :: ASHandbook1964_pi = 3.141592653589793238462643_cpcd_kind
-  real(cpcd_kind), parameter :: ASHandbook1964_gamma = 0.577215664901532860606512_cpcd_kind
-  real(cpcd_kind), parameter :: ASHandbook1964_square_root_of_2 = 1.4142135623730950488_cpcd_kind
+  character(len=*), parameter :: cpcd_version = '0.0.1'
+  character(len=*), parameter :: cpcd_institution = 'ICAMS'
 
-  ! - from set CODATA2014
-  real(cpcd_kind), parameter :: CODATA2014_speed_of_light_in_vacuum = 299792458_cpcd_kind
-  real(cpcd_kind), parameter :: CODATA2014_standard_acceleration_of_gravity = 9.80665_cpcd_kind
-  real(cpcd_kind), parameter :: CODATA2014_stefan_boltzmann_constant = 5.67036713E-08_cpcd_kind
-
-  ! - from set GRS80
-  real(cpcd_kind), parameter :: GRS80_mean_radius = 6371008.7714_cpcd_kind
-
-  ! - from set IAPWS1995
-  real(cpcd_kind), parameter :: IAPWS1995_liquid_water_triple_point_density = 999.793_cpcd_kind
-  real(cpcd_kind), parameter :: IAPWS1995_vapor_water_triple_point_density = 0.00485458_cpcd_kind
+! - from set mathematical
+  real(cpcd_kind), parameter :: mathematical_pi = 3.141592653589793238462643_cpcd_kind
+  real(cpcd_kind), parameter :: mathematical_em_gamma = 0.577215664901532860606512_cpcd_kind
+  real(cpcd_kind), parameter :: mathematical_square_root_of_2 = 1.4142135623730950488_cpcd_kind
+! - from set universal_physical
+  real(cpcd_kind), parameter :: universal_physical_speed_of_light_in_vacuum = 299792458_cpcd_kind
+  real(cpcd_kind), parameter :: universal_physical_standard_acceleration_of_gravity = 9.80665_cpcd_kind
+  real(cpcd_kind), parameter :: universal_physical_stefan_boltzmann_constant = 5.67036713E-08_cpcd_kind
+! - from set earth_physical
+  real(cpcd_kind), parameter :: earth_physical_mean_radius = 6371008.7714_cpcd_kind
+! - from set water
+  real(cpcd_kind), parameter :: water_liquid_water_triple_point_density = 999.793_cpcd_kind
+  real(cpcd_kind), parameter :: water_vapor_water_triple_point_density = 0.00485458_cpcd_kind
 
 end module cpcd
 ```
