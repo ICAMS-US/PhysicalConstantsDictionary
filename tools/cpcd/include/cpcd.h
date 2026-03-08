@@ -73,6 +73,7 @@ namespace CPCD {
       // read and set user requests for physical constant subsets
       int readreq (const std::string& filename);
       int loadreq (const std::string& request);
+      int loadall ();  // generate request for all constants in the dictionary
       // write original request to standard output
       int showreq () const;
       // write stored request to standard output
@@ -115,6 +116,8 @@ namespace CPCD {
       Node sel;    // stores physical constant list parsed from input user request
       Node syntax; // stores syntax reference for physical constant dictionary for validation purposes
       Node map;    // work map
+      std::string version; // stores dictionary version
+      std::string institution; // stores dictionary institution
 
   }; // class CPCD
 
