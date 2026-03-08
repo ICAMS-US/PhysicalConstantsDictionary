@@ -1,8 +1,10 @@
 # Physical Constants Dictionary (PCD) Documentation
 
-Documentation for the features of the community-based Physical Constants Dictionary (PCD).
+Features of the community-based Physical Constants Dictionary (PCD).
 
-## Documentation Pages
-
+## Syntax
 - [Dictionary Syntax](dictionary-syntax.md) - YAML syntax rules for the physical constants dictionary
-- [The CPCD Parser](cpcd-parser.md) - Guide to building and using the Community Physical Constants Dictionary parser
+
+## Parsers
+- [The CPCD Parser](cpcd-parser.md) - Building and using the C++ Community Physical Constants Dictionary parser
+- [Python Parser](python-parser.md) - Python based CPCD parser
